@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+html.has-scroll-smooth {
+  overflow: hidden;
+}
+
+[data-scroll-container] {
+  min-height: 100vh;
+}

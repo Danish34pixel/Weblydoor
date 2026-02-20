@@ -1,10 +1,9 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 
-const Dev = ({ onHoverChange }) => {
+const AppDev = ({ onHoverChange }) => {
   const [mousePos, setMousePos] = useState({ x: -100, y: -100 });
 
-  // 1. Generate initial particle data
   const particles = useMemo(() => {
     const points = [];
     const addCluster = (startX, startY, endX, endY, density = 40) => {
@@ -12,28 +11,72 @@ const Dev = ({ onHoverChange }) => {
         const t = Math.random();
         const baseX = startX + t * (endX - startX);
         const baseY = startY + t * (endY - startY);
-        const spread = 6;
+        const spread = 2.5; 
         points.push({
           originX: baseX + (Math.random() - 0.5) * spread,
           originY: baseY + (Math.random() - 0.5) * spread,
-          size: Math.random() * 1.5,
+          size: Math.random() * 1.2,
           opacity: Math.random() * 0.8 + 0.2,
         });
       }
     };
 
-    addCluster(35, 30, 15, 50, 150); 
-    addCluster(15, 50, 35, 70, 150); 
-    addCluster(58, 20, 42, 80, 200);
-    addCluster(65, 30, 85, 50, 150); 
-    addCluster(85, 50, 65, 70, 150); 
+    // 1. OUTER GEAR (Circular pattern with teeth)
+  // 1. THE GEAR BODY (Outer and Inner Ring)
+// This creates the "Circular Track" that connects the teeth
+for (let i = 0; i < 360; i += 2) {
+  const angle = (i * Math.PI) / 180;
+  
+  // Outer circle (at the base of the teeth)
+  addCluster(
+    50 + Math.cos(angle) * 36, 
+    50 + Math.sin(angle) * 36, 
+    50 + Math.cos(angle) * 36, 
+    50 + Math.sin(angle) * 36, 
+    3 // Small density to keep it sharp
+  );
+  
+  // Inner circle (defining the hole in the gear)
+  addCluster(
+    50 + Math.cos(angle) * 30, 
+    50 + Math.sin(angle) * 30, 
+    50 + Math.cos(angle) * 30, 
+    50 + Math.sin(angle) * 30, 
+    2
+  );
+}
+
+// 2. THE GEAR TEETH
+// This remains for the jagged outer edge
+for (let i = 0; i < 360; i += 5) {
+  const angle = (i * Math.PI) / 180;
+  const isTooth = i % 30 < 15; 
+  if (isTooth) {
+    const r = 42;
+    addCluster(
+        50 + Math.cos(angle) * r, 
+        50 + Math.sin(angle) * r, 
+        50 + Math.cos(angle) * r, 
+        50 + Math.sin(angle) * r, 
+        8 // Higher density for the teeth
+    );
+  }
+}
+
+    // 3. CENTRAL MOBILE PHONE
+    // Phone Frame
+    addCluster(44, 42, 56, 42, 30); // Top
+    addCluster(44, 58, 56, 58, 30); // Bottom
+    addCluster(44, 42, 44, 58, 40); // Left
+    addCluster(56, 42, 56, 58, 40); // Right
+    // Home button dot
+    addCluster(50, 56, 50, 56, 15);
+
     return points;
   }, []);
 
-  // 2. Track mouse relative to the SVG
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    // Convert screen pixels to SVG viewbox units (0-100)
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
     setMousePos({ x, y });
@@ -66,25 +109,24 @@ const Dev = ({ onHoverChange }) => {
             <stop offset="100%" stopColor="transparent" />
           </radialGradient>
           <filter id="bloom">
-            <feGaussianBlur stdDeviation="0.5" result="blur" />
+            <feGaussianBlur stdDeviation="0.4" result="blur" />
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
         </defs>
 
         <g filter="url(#bloom)">
           {particles.map((p, i) => {
-            // 3. Calculate Displacement Logic
             const dx = mousePos.x - p.originX;
             const dy = mousePos.y - p.originY;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            const radius = 12; // How far the "blank" area spreads
+            const radius = 10; 
             
             let forceX = 0;
             let forceY = 0;
 
             if (distance < radius) {
               const angle = Math.atan2(dy, dx);
-              const push = (radius - distance) * 1.5; // Strength of the push
+              const push = (radius - distance) * 1.8; 
               forceX = -Math.cos(angle) * push;
               forceY = -Math.sin(angle) * push;
             }
@@ -94,13 +136,12 @@ const Dev = ({ onHoverChange }) => {
                 key={i}
                 r={p.size}
                 fill="url(#particleGold)"
-                initial={false}
                 animate={{
                   cx: p.originX + forceX,
                   cy: p.originY + forceY,
-                  opacity: distance < radius - 2 ? 0.1 : p.opacity // Optional: fade out inside the blank
+                  opacity: distance < radius - 1 ? 0.15 : p.opacity 
                 }}
-                transition={{ type: 'spring', stiffness: 150, damping: 15, mass: 0.1 }}
+                transition={{ type: 'spring', stiffness: 200, damping: 20, mass: 0.1 }}
               />
             );
           })}
@@ -110,4 +151,4 @@ const Dev = ({ onHoverChange }) => {
   );
 };
 
-export default Dev; 
+export default AppDev;

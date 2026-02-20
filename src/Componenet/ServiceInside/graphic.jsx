@@ -1,10 +1,9 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 
-const Dev = ({ onHoverChange }) => {
+const Graphic = ({ onHoverChange }) => {
   const [mousePos, setMousePos] = useState({ x: -100, y: -100 });
 
-  // 1. Generate initial particle data
   const particles = useMemo(() => {
     const points = [];
     const addCluster = (startX, startY, endX, endY, density = 40) => {
@@ -12,28 +11,55 @@ const Dev = ({ onHoverChange }) => {
         const t = Math.random();
         const baseX = startX + t * (endX - startX);
         const baseY = startY + t * (endY - startY);
-        const spread = 6;
+        const spread = 2.5; 
         points.push({
           originX: baseX + (Math.random() - 0.5) * spread,
           originY: baseY + (Math.random() - 0.5) * spread,
-          size: Math.random() * 1.5,
-          opacity: Math.random() * 0.8 + 0.2,
+          size: Math.random() * 1.3,
+          opacity: Math.random() * 0.7 + 0.3,
         });
       }
     };
 
-    addCluster(35, 30, 15, 50, 150); 
-    addCluster(15, 50, 35, 70, 150); 
-    addCluster(58, 20, 42, 80, 200);
-    addCluster(65, 30, 85, 50, 150); 
-    addCluster(85, 50, 65, 70, 150); 
+    // --- 1. THE CROWN (Top Section) ---
+    // Left peak
+    addCluster(30, 30, 42, 40, 60); 
+    // Center peak
+    addCluster(50, 22, 50, 40, 80);
+    // Right peak
+    addCluster(70, 30, 58, 40, 60);
+    // Base curves of the crown
+    for (let i = 0; i <= 10; i++) {
+        addCluster(30 + i, 30, 42, 40, 5); // Connect left
+        addCluster(70 - i, 30, 58, 40, 5); // Connect right
+    }
+
+    // --- 2. THE PEN NIB (Body Section) ---
+    // Top Horizontal Shoulder
+    addCluster(35, 43, 65, 43, 100);
+    
+    // Left side curve to tip
+    addCluster(35, 43, 30, 65, 80);
+    addCluster(30, 65, 50, 95, 120);
+    
+    // Right side curve to tip
+    addCluster(65, 43, 70, 65, 80);
+    addCluster(70, 65, 50, 95, 120);
+
+    // --- 3. NIB HOLE AND SLIT ---
+    // The central circle hole
+    for (let i = 0; i < 360; i += 20) {
+        const rad = (i * Math.PI) / 180;
+        addCluster(50 + Math.cos(rad) * 4, 68 + Math.sin(rad) * 4, 50, 68, 10);
+    }
+    // The slit (vertical line from hole to tip)
+    addCluster(50, 72, 50, 92, 40);
+
     return points;
   }, []);
 
-  // 2. Track mouse relative to the SVG
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    // Convert screen pixels to SVG viewbox units (0-100)
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
     setMousePos({ x, y });
@@ -66,25 +92,24 @@ const Dev = ({ onHoverChange }) => {
             <stop offset="100%" stopColor="transparent" />
           </radialGradient>
           <filter id="bloom">
-            <feGaussianBlur stdDeviation="0.5" result="blur" />
+            <feGaussianBlur stdDeviation="0.4" result="blur" />
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
         </defs>
 
         <g filter="url(#bloom)">
           {particles.map((p, i) => {
-            // 3. Calculate Displacement Logic
             const dx = mousePos.x - p.originX;
             const dy = mousePos.y - p.originY;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            const radius = 12; // How far the "blank" area spreads
+            const radius = 10; 
             
             let forceX = 0;
             let forceY = 0;
 
             if (distance < radius) {
               const angle = Math.atan2(dy, dx);
-              const push = (radius - distance) * 1.5; // Strength of the push
+              const push = (radius - distance) * 1.8; 
               forceX = -Math.cos(angle) * push;
               forceY = -Math.sin(angle) * push;
             }
@@ -94,13 +119,12 @@ const Dev = ({ onHoverChange }) => {
                 key={i}
                 r={p.size}
                 fill="url(#particleGold)"
-                initial={false}
                 animate={{
                   cx: p.originX + forceX,
                   cy: p.originY + forceY,
-                  opacity: distance < radius - 2 ? 0.1 : p.opacity // Optional: fade out inside the blank
+                  opacity: distance < radius - 1 ? 0.2 : p.opacity 
                 }}
-                transition={{ type: 'spring', stiffness: 150, damping: 15, mass: 0.1 }}
+                transition={{ type: 'spring', stiffness: 200, damping: 22, mass: 0.1 }}
               />
             );
           })}
@@ -110,4 +134,4 @@ const Dev = ({ onHoverChange }) => {
   );
 };
 
-export default Dev; 
+export default Graphic;

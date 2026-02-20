@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import { Renderer, Program, Triangle, Mesh } from 'ogl';
-import './LightRays.css';
+import '../css/Lightray.css';
 
 const DEFAULT_COLOR = '#ffffff';
 
@@ -13,7 +13,10 @@ const getAnchorAndDir = (origin, w, h) => {
   const outside = 0.2;
   switch (origin) {
     case 'top-left':
-      return { anchor: [0, -outside * h], dir: [0, 1] };
+  return { 
+    anchor: [0.4 * w, -0.1 * h],  // 👈 little right + little down
+    dir: [0.1, 1]                  // 👈 slight diagonal
+  };
     case 'top-right':
       return { anchor: [w, -outside * h], dir: [0, 1] };
     case 'left':

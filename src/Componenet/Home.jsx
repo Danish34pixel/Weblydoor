@@ -25,7 +25,6 @@ const Home = () => {
     [text]
   );
 
-  // ✅ Smooth Scroll Setup
   useEffect(() => {
     const scroll = new LocomotiveScroll({
       el: scrollRef.current,
@@ -34,21 +33,15 @@ const Home = () => {
       lerp: 0.08,
     });
 
-    return () => {
-      if (scroll) scroll.destroy();
-    };
+    return () => scroll.destroy();
   }, []);
 
   return (
     <>
-      {/* 🔥 Scroll Container */}
       <div
         ref={scrollRef}
         data-scroll-container
-        style={{
-          minHeight: "100vh",
-          backgroundColor: "#050505",
-        }}
+        style={{ minHeight: "100vh", position: "relative" }}
       >
         <Nav />
 
@@ -61,6 +54,7 @@ const Home = () => {
             alignItems: "center",
             justifyContent: "center",
             position: "relative",
+            zIndex: 10,
           }}
         >
           <div
@@ -69,8 +63,6 @@ const Home = () => {
               flexDirection: "column",
               alignItems: "center",
               gap: 28,
-              zIndex: 10,
-              position: "relative",
             }}
           >
             <Logo />
@@ -90,7 +82,7 @@ const Home = () => {
         {/* Stats Section */}
         <div
           data-scroll-section
-          className="flex gap-4 relative z-10 p-4 justify-center bg-transparent"
+          className="flex gap-4 relative z-10 p-4 justify-center"
         >
           <div className="decrypt-text">
             <h1>
@@ -139,7 +131,6 @@ const Home = () => {
         </div>
       </div>
 
-      {/* 🔥 IMPORTANT: Cursor OUTSIDE scroll container */}
       <Cursor />
     </>
   );

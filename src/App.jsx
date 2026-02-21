@@ -1,23 +1,15 @@
-import React from 'react'
-import Home from './Componenet/Home'
+
+import Home from './Componenet/Home';
+import Background from './Componenet/Inside/Background';
 
 const App = () => {
   return (
-    <div>
-      <style>{`
-        /* Hide scrollbar for all browsers */
-        html, body {
-          scrollbar-width: none; /* Firefox */
-          -ms-overflow-style: none; /* IE and Edge */
-          overflow-y: scroll; /* Chrome, Safari and Opera */
-        }
-        html::-webkit-scrollbar, body::-webkit-scrollbar {
-          display: none; /* Chrome, Safari and Opera */
-        }
-      `}</style>
+    <>
+      {/* Background stays OUTSIDE scroll container */}
+      <Background />
       <Home/>
-    </div>
-  )
-}
+    </>
+  );
+};
 
-export default App
+export default App;

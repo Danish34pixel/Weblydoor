@@ -93,7 +93,7 @@ for (let i = 0; i < 360; i += 5) {
       style={{
         cursor: 'none',
         width: '100%',
-        maxWidth: 'clamp(250px, 90vw, 450px)',
+        maxWidth: 'clamp(250px, 90vw, 320px)',
         minHeight: '250px',
         aspectRatio: '1',
         display: 'block',

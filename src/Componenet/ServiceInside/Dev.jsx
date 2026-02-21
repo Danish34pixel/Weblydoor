@@ -50,7 +50,7 @@ const Dev = ({ onHoverChange }) => {
       style={{
         cursor: 'none',
         width: '100%',
-        maxWidth: 'clamp(250px, 90vw, 450px)',
+        maxWidth: 'clamp(250px, 90vw, 320px)',
         minHeight: '250px',
         aspectRatio: '1',
         display: 'block',

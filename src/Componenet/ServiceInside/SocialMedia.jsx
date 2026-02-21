@@ -89,7 +89,7 @@ const SocialMedia = () => {
         setMousePos({ x: -100, y: -100 });
       }}
       onMouseMove={handleMouseMove}
-      style={{ width: '100%', maxWidth: 'clamp(250px, 90vw, 450px)', minHeight: '250px', aspectRatio: '1', cursor: 'none', display: 'block', margin: '0 auto', padding: '0' }}
+      style={{ width: '100%', maxWidth: 'clamp(250px, 90vw, 320px)', minHeight: '250px', aspectRatio: '1', cursor: 'none', display: 'block', margin: '0 auto', padding: '0' }}
     >
         <svg width="100%" height="100%" viewBox="0 0 100 100" style={{ display: 'block' }}>
           <defs>
